@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { IncrementadorComponent } from '../components/incrementador/incrementador.component';
 import { ChartsModule } from 'ng2-charts';
 import { GraficoDonasComponent } from '../components/graficoDonas/grafico-donas.component';
+import { AccountSettingsComponent } from './account-settings/account-settings.component';
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import { GraficoDonasComponent } from '../components/graficoDonas/grafico-donas.
         ProgressComponent,
         Graficas1Component,
         IncrementadorComponent,
-        GraficoDonasComponent
+        GraficoDonasComponent,
+        AccountSettingsComponent
     ], exports: [
         DashboardComponent,
         ProgressComponent,
