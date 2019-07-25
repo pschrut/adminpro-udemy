@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HospitalService } from '../../services/hospital/hospital.service';
 import { Hospital } from '../../models/hospital.model';
 import Swal from 'sweetalert2';
+import { ModalUploadService } from '../../components/modal-upload/modal-upload.service';
 
 @Component({
   selector: 'app-hospitales',
@@ -13,10 +14,17 @@ export class HospitalesComponent implements OnInit {
   hospitales: Hospital[] = [];
   totalHospitales: number;
 
-  constructor(public hospitalService: HospitalService) { }
+  constructor(public hospitalService: HospitalService, public modalUploadService: ModalUploadService) { }
 
   ngOnInit() {
     this.cargarHospitales();
+    this.modalUploadService.notificacion.subscribe((resp: any) => {
+      this.cargarHospitales();
+    });
+  }
+
+  mostrarModal(id: string) {
+    this.modalUploadService.mostrarModal('hospitales', id);
   }
 
   cargarHospitales() {
@@ -46,8 +54,18 @@ export class HospitalesComponent implements OnInit {
     });
   }
 
-  buscarHospital(value: string) {
+  buscarHospital(termino: string) {
+    if (termino.length <= 0) {
+      this.cargarHospitales();
+      return;
+    }
 
+    this.cargando = true;
+    this.hospitalService.buscarHospital(termino).subscribe((hospitales: Hospital[]) => {
+      console.log(hospitales);
+      this.hospitales = hospitales;
+      this.cargando = false;
+    });
   }
 
   crearHospital() {
