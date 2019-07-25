@@ -6,7 +6,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 export class ModalUploadService {
   public tipo: string;
   public id: string;
-  public oculto: string = 'oculto';
+  public oculto = 'oculto';
 
   public notificacion = new EventEmitter<any>();
 
