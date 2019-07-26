@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Usuario } from 'src/app/models/usuario.model';
 import { HttpClient } from '@angular/common/http';
 import { URL_SERVICIOS } from '../../config/config';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { SubirArchivoService } from '../subir-archivo/subir-archivo.service';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -77,11 +78,17 @@ export class UsuarioService {
 
     let url = URL_SERVICIOS + '/login';
 
-    return this.http.post(url, usuario).pipe(map((resp: any) => {
-      this.guardarStorage(resp.id, resp.token, resp.usuario, resp.menu);
+    return this.http.post(url, usuario).pipe(
+      map((resp: any) => {
+        this.guardarStorage(resp.id, resp.token, resp.usuario, resp.menu);
 
-      return true;
-    }));
+        return true;
+      }),
+      catchError(err => {
+        Swal.fire('Error de autenticacion', err.error.mensaje, 'error');
+        return throwError(err.error.mensaje);
+      })
+    );
   }
 
   crearUsuario(usuario: Usuario) {
@@ -91,6 +98,10 @@ export class UsuarioService {
       map((resp: any) => {
         Swal.fire('Usuario creado', resp.email, 'success');
         return resp.usuario;
+      }),
+      catchError(err => {
+        Swal.fire(err.error.err.message, err.error.mensaje, 'error');
+        return throwError(err.error.err.message);
       })
     );
   }
